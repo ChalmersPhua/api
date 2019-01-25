@@ -1,1 +1,142 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Guess the Tag</title>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+		<link href="api.css" rel='stylesheet'/>
+		<link href="https://fonts.googleapis.com/css?family=Lobster|Righteous" rel="stylesheet">
+	</head>
+	<body>
+		<h1>Guess the Tag</h1>
+		<div class='d-flex justify-content-center d-flex align-items-end'>
+			<button id='b1' type="button" class="btn btn-outline-primary">Space</button>
+			<button id='b2' type="button" class="btn btn-outline-secondary">City</button>
+			<button id='b3' type="button" class="btn btn-outline-success">Nature</button>
+			<button id='b4' type="button" class="btn btn-outline-danger">Destruction</button>
+		</div>
+		<ul id='list-data'></ul>
+		<script>
+			const popularTag = ["Destruction", "Space", "City", "Nature", "Ocean"];
+			const buttonNum = [0,1,2,3];
+			let randomPopular = [];
+			let randomBtn = [];
 
+			const listData = document.getElementById("list-data");
+			const buttonOne = document.getElementById("b1");
+			const buttonTwo = document.getElementById("b2");
+			const buttonThree = document.getElementById("b3");
+			const buttonFour = document.getElementById("b4");
+
+			var codes = randomOne();
+			randomButton(codes[0], codes[1], codes[2], codes[3]);
+			getTerm(randomTag());
+			function randomOne() {
+
+    			let i = buttonNum.length;
+    			let index;
+
+    			while(i--){
+        			index = Math.floor(Math.random()*(i+1));
+        			randomBtn.push(buttonNum[index]);
+        			buttonNum.splice(index,1);
+    			}
+    			console.log(randomBtn);
+
+    			return [randomBtn[0], randomBtn[1], randomBtn[2], randomBtn[3]]
+			}
+			function randomButton(randomNum, randomNum2, randomNum3, randomNum4){
+
+    			let i = popularTag.length;
+    			let index = 0;
+
+    			while(i--){
+        			index = Math.floor(Math.random()*(i+1));
+        			randomPopular.push(popularTag[index]);
+        			popularTag.splice(index,1);
+    			}
+    			buttonOne.innerHTML = randomPopular[randomNum];
+    			buttonTwo.innerHTML = randomPopular[randomNum2];
+   	 			buttonThree.innerHTML = randomPopular[randomNum3]; 
+    			buttonFour.innerHTML = randomPopular[randomNum4];
+			}
+			function randomTag() {
+    			let i = popularTag.length;
+    			let index = 0;
+
+    			while(i--){
+        			index = Math.floor(Math.random()*(i+1));
+        			randomPopular.push(popularTag[index]);
+        			popularTag.splice(index,1);
+    			}
+    			console.log("Picture Index: ", randomPopular[0]);
+    			return randomPopular[0];
+			};
+			function getTerm(tagName) {
+    			fetch("https://api.tumblr.com/v2/tagged?tag=" + tagName + "&api_key=LvKzNWoEWLZQgGCkRZk4bwHNQDv3iwEVaWm6zNgY9rjZoWI2qQ")
+    			.then(function(response){
+        			return response.json();
+    			})
+    			.then(function(result){
+					listData.innerHTML = "";
+        			const items = result.response;
+        			for(let i = 0; i < items.length; i++){
+            			const item = items[i];
+            			if(item.photos != undefined){
+                			const altSize = item.photos[0].alt_sizes;
+                			const ImgSrc = altSize[altSize.length - 3].url;
+                			const img = document.createElement("img");
+                			img.src = ImgSrc;
+                
+                			const li = document.createElement("li");
+                			li.appendChild(img);
+                			listData.appendChild(li);
+            			}
+           
+        			}
+        
+    			})
+
+			}
+			buttonOne.onclick = function(){
+    			if(buttonOne.innerHTML==randomPopular[0]){
+        			alert("Correct");  
+
+    			}
+    			else{
+        			alert("Oh no");
+    			}
+    			location.reload();
+			} 
+			buttonTwo.onclick = function(){
+    			if(buttonTwo.innerHTML==randomPopular[0]){
+        			alert("You're just lucky")
+    			}
+    			else{
+        			alert("Take the L");
+    			}
+    			location.reload();
+			} 
+			buttonThree.onclick = function(){
+    			if(buttonThree.innerHTML==randomPopular[0]){
+        			alert("Not bad");  
+    			}
+    			else{
+        			alert("Too bad");
+    			}
+    			location.reload();
+			} 
+			buttonFour.onclick = function(){
+    			if(buttonFour.innerHTML==randomPopular[0]){
+        			alert("Nice");     
+    			}
+    			else{      
+        			alert("Go Away");
+    			}
+    			location.reload();
+			}
+		</script>
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+	</body>
+</html>
